@@ -8,7 +8,6 @@
  * @license MIT
  */
 
-const cron = require("cron");
 const dropbox = require("dropbox");
 const https = require("https");
 const moment = require("moment");
@@ -140,21 +139,4 @@ function getTomorrowsNYTCrossword() {
   getNYTCrossword(tomorrow);
 }
 
-const weekdayJob = cron.CronJob.from({
-  cronTime: "1 22 * * 1,2,3,4,5", // Mon-Fri @ 10:01pm ET.
-  timeZone: "America/New_York",
-  onTick() {
-    getTomorrowsNYTCrossword();
-  },
-});
-
-const weekendJob = cron.CronJob.from({
-  cronTime: "1 18 * * 0,6", // Sun,Sat @ 6:01pm ET.
-  timeZone: "America/New_York",
-  onTick() {
-    getTomorrowsNYTCrossword();
-  },
-});
-
-weekdayJob.start();
-weekendJob.start();
+getTomorrowsNYTCrossword();

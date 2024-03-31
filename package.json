@@ -17,7 +17,6 @@
   },
   "homepage": "https://github.com/alechemy/NYT-Crossword-to-Supernote#readme",
   "dependencies": {
-    "cron": "^3.1.6",
     "dropbox": "^10.34.0",
     "moment": "^2.30.1"
   }
