@@ -61,7 +61,7 @@ function getNYTCrossword(date) {
       {
         protocol: "https:",
         host: "www.nytimes.com",
-        path: `/svc/crosswords/v2/puzzle/${id}.pdf`,
+        path: `/svc/crosswords/v2/puzzle/${id}.pdf?southpaw=true`,
         method: "GET",
         headers: {
           Referer: "https://www.nytimes.com/crosswords/archive/daily",
