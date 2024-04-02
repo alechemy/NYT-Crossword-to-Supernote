@@ -51,7 +51,7 @@ async function getPuzzleId(date) {
   });
 }
 
-function getNYTCrossword(date) {
+function getNYTCrossword(date, dryRun = false) {
   console.log("Attempting to download crossword...");
   const d = moment(date);
 
@@ -81,6 +81,7 @@ function getNYTCrossword(date) {
 
           res.on("end", () => {
             console.log("Successfully downloaded crossword");
+            if (dryRun) return;
 
             // The file has successfully downloaded. Upload it
             // to Dropbox.
@@ -127,16 +128,4 @@ function getNYTCrossword(date) {
   // cookie will eventually expire and need to be set again.
 }
 
-function getTomorrowsNYTCrossword() {
-  const today = new Date();
-  const todayNYTime = today.toLocaleString("en-US", {
-    timeZone: "America/New_York",
-  });
-
-  const tomorrow = new Date(todayNYTime);
-  tomorrow.setDate(tomorrow.getDate() + 1);
-
-  getNYTCrossword(tomorrow);
-}
-
-getTomorrowsNYTCrossword();
+getNYTCrossword(new Date());
