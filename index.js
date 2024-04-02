@@ -13,14 +13,10 @@ const https = require("https");
 const moment = require("moment");
 const path = require("path");
 
-// Instantiate the Dropbox instance.
-//
-// Set DROPBOX_ACCESS_TOKEN to an access token that you've
-// generated for your Dropbox account.
-//
-// See https://dropbox.tech/developers/generate-an-access-token-for-your-own-account
 const dbx = new dropbox.Dropbox({
-  accessToken: process.env.DROPBOX_ACCESS_TOKEN,
+  clientId: process.env.DROPBOX_CLIENT_ID,
+  clientSecret: process.env.DROPBOX_CLIENT_SECRET,
+  refreshToken: process.env.DROPBOX_REFRESH_TOKEN,
 });
 
 async function getPuzzleId(date) {
