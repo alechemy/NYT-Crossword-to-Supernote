@@ -10,7 +10,6 @@
 
 const dropbox = require("dropbox");
 const https = require("https");
-const moment = require("moment");
 const path = require("path");
 
 const dbx = new dropbox.Dropbox({
@@ -19,12 +18,12 @@ const dbx = new dropbox.Dropbox({
   refreshToken: process.env.DROPBOX_REFRESH_TOKEN,
 });
 
-async function getPuzzleId(date) {
+const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+async function getPuzzleId(dateString) {
   return new Promise((resolve) => {
     https.get(
-      `https://www.nytimes.com/svc/crosswords/v6/puzzle/daily/${date.format(
-        "YYYY-MM-DD"
-      )}.json`,
+      `https://www.nytimes.com/svc/crosswords/v6/puzzle/daily/${dateString}.json`,
       {
         headers: {
           Cookie: process.env.NYT_COOKIE,
@@ -38,7 +37,7 @@ async function getPuzzleId(date) {
         });
 
         res.on("end", () => {
-          console.log(`Crossword ID: ${JSON.parse(data).id}`);
+          console.log(`Crossword ID for ${dateString}: ${JSON.parse(data).id}`);
           const id = JSON.parse(data).id;
           resolve(id);
         });
@@ -49,9 +48,11 @@ async function getPuzzleId(date) {
 
 function getNYTCrossword(date, dryRun = false) {
   console.log("Attempting to download crossword...");
-  const d = moment(date);
 
-  getPuzzleId(d).then((id) => {
+  const dateString = date.toISOString();
+  const formattedDateString = dateString.substring(0, dateString.indexOf("T"));
+
+  getPuzzleId(formattedDateString).then((id) => {
     const req = https.request(
       {
         protocol: "https:",
@@ -89,7 +90,9 @@ function getNYTCrossword(date, dryRun = false) {
               .filesUpload({
                 path: path.join(
                   process.env.SUPERNOTE_UPLOAD_PATH,
-                  `${d.format("YYYYMMDD_ddd")}-crossword.pdf`
+                  `${formattedDateString} (${
+                    dayNames[new Date(formattedDateString).getDate()]
+                  }) Crossword.pdf`
                 ),
                 contents: Buffer.concat(data),
               })
@@ -116,12 +119,6 @@ function getNYTCrossword(date, dryRun = false) {
 
     req.end();
   });
-
-  // Get the crossword.
-  //
-  // Set NYT_COOKIE to the return value of `document.cookie`
-  // when logged into your account on nytimes.com. This
-  // cookie will eventually expire and need to be set again.
 }
 
 getNYTCrossword(new Date());
