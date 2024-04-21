@@ -18,7 +18,15 @@ const dbx = new dropbox.Dropbox({
   refreshToken: process.env.DROPBOX_REFRESH_TOKEN,
 });
 
-const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+const dayNames = [
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+  "Sunday",
+];
 
 async function getPuzzleId(dateString) {
   return new Promise((resolve) => {
@@ -91,7 +99,7 @@ function getNYTCrossword(date, dryRun = false) {
                 path: path.join(
                   process.env.SUPERNOTE_UPLOAD_PATH,
                   `${formattedDateString} (${
-                    dayNames[new Date(formattedDateString).getDate()]
+                    dayNames[new Date(formattedDateString).getDay()]
                   }) Crossword.pdf`
                 ),
                 contents: Buffer.concat(data),
